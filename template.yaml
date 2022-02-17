@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS SAM Lambda application.
+
+Globals:
+  Function:
+    CodeUri: build/distributions/aws-ci-cd-task-1.0-SNAPSHOT.zip
+    Runtime: java11
+    MemorySize: 512
+    Timeout: 20
+    Layers:
+      - Ref: MyLayer
+    DeploymentPreference:
+      Type: AllAtOnce
+    AutoPublishAlias: live
+
+Resources:
+  NotificationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Java function that reads messages from SQS and sends to SNS
+      Handler: com.epam.cloudx.pavelsh.awsapp.awscicd.ImageProcessHandler
+      FunctionName: Task-10-batch-notifier
+      Role: arn:aws:iam::150063193970:role/LambdaSqsSnsRole
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /batch-notifier
+            Method: get
+
+  ApplicationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Java function that simply returns input event
+      Handler: com.epam.cloudx.pavelsh.awsapp.awscicd.ImageProcessHandler
+      FunctionName: Task-10-batch-notifier
+      Policies: AWSLambdaBasicExecutionRole
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /test
+            Method: get
