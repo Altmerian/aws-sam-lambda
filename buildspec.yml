@@ -20,4 +20,4 @@ phases:
       - sam package --s3-bucket pavel-shakhlovich-artifacts --output-template-file ./.aws-sam/build/template.yaml
 artifacts:
   files:
-    - outputTemplate.yaml
+    - .aws-sam/build/template.yaml
