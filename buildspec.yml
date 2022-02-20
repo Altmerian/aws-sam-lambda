@@ -4,7 +4,7 @@ phases:
   install:
     runtime-versions:
       java: corretto11
-  test:
+  pre_build:
     commands:
       - echo Run Unit Tests...
       - gradlew test
@@ -14,7 +14,7 @@ phases:
       - gradlew clean build
       - sam build
       - echo Build completed on `date`
-  package:
+  post_build:
     commands:
       - echo Packaging the code...
       - sam package --s3-bucket pavel-shakhlovich-artifacts --output-template-file ./.aws-sam/build/template.yaml
