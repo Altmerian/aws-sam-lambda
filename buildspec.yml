@@ -7,11 +7,11 @@ phases:
   pre_build:
     commands:
       - echo Run Unit Tests...
-      - gradlew test
+      - gradle test
   build:
     commands:
       - echo Build started on `date`
-      - gradlew clean build
+      - gradle clean build
       - sam build
       - echo Build completed on `date`
   post_build:
