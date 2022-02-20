@@ -4,7 +4,6 @@ Description: An AWS SAM Lambda application.
 
 Globals:
   Function:
-    CodeUri: build/distributions/aws-ci-cd-task-1.0-SNAPSHOT.zip
     Runtime: java11
     MemorySize: 512
     Timeout: 20
@@ -15,30 +14,38 @@ Globals:
     AutoPublishAlias: live
 
 Resources:
+  MyLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: task-10-1-layer
+      Description: Includes aws-java-sdk, aws-lambda-java-events, aws-lambda-java-core from Java SDK v.1
+      ContentUri: s3://pavel-shakhlovich-artifacts/lambda-layer.zip
+      CompatibleRuntimes:
+        - java11
+      RetentionPolicy: Delete
+
   NotificationFunction:
     Type: AWS::Serverless::Function
     Properties:
       Description: Java function that reads messages from SQS and sends to SNS
-      Handler: com.epam.cloudx.pavelsh.awsapp.awscicd.ImageProcessHandler
+      CodeUri: build/distributions/aws-ci-cd-task-1.0-SNAPSHOT.zip
+      Handler: com.epam.cloudx.pavelsh.awscicd.lambda.ImageProcessHandler
       FunctionName: Task-10-batch-notifier
       Role: arn:aws:iam::150063193970:role/LambdaSqsSnsRole
+      PackageType: Zip
       Events:
         ApiEvent:
           Type: Api
           Properties:
             Path: /batch-notifier
-            Method: get
+            Method: post
 
   ApplicationFunction:
     Type: AWS::Serverless::Function
     Properties:
       Description: Java function that simply returns input event
-      Handler: com.epam.cloudx.pavelsh.awsapp.awscicd.ImageProcessHandler
-      FunctionName: Task-10-batch-notifier
+      CodeUri: build/distributions/aws-ci-cd-task-1.0-SNAPSHOT.zip
+      Handler: com.epam.cloudx.pavelsh.awscicd.lambda.ApplicationHandler
+      FunctionName: Task-10-ci-cd-test
       Policies: AWSLambdaBasicExecutionRole
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Path: /test
-            Method: get
+      PackageType: Zip
