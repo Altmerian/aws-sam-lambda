@@ -32,7 +32,6 @@ task buildLayerZip(type: Zip) {
         exclude(
                 "**tomcat**",
                 "**spring**",
-                "**jackson**",
                 "**netty**",
                 "**ec2**",
                 "**sagemaker**",
